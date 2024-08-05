@@ -57,19 +57,19 @@ Done
  show qoshal ep np <np> location <node> front end
  Subslot 0 Ifsubsysnum 0 NP_EP :0 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : <span style="background-color: #FDD7E4">Chunk 0</span>, L1 0
+        Egress  : <span style="background-color: #ff0000">Chunk 0</span>, L1 0
 
 Subslot 0 Ifsubsysnum 1 NP_EP :1 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : <span style="background-color: #FDD7E4">Chunk 1</span>, L1 0
+        Egress  : <span style="background-color: #006600">Chunk 1</span>, L1 0
 
 Subslot 0 Ifsubsysnum 2 NP_EP :2 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : <span style="background-color: #FDD7E4">Chunk 2</span>, L1 0
+        Egress  : <span style="background-color: #003399">Chunk 2</span>, L1 0
 
 Subslot 0 Ifsubsysnum 3 NP_EP :3 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : <span style="background-color: #FDD7E4">Chunk 3</span>, L1 0
+        Egress  : <span style="background-color: #660066">Chunk 3</span>, L1 0
 
 </code>
 </pre>
