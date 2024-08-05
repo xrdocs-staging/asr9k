@@ -1,5 +1,5 @@
 ---
-published: false
+published: true
 date: '2024-08-05 14:53 +0200'
 title: Reaching Full BNG Scale on ASR 9000
 tags:
