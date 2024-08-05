@@ -45,6 +45,9 @@ To illustrate the structure, here is a diagram highlighting the NPUs of the 5th 
 
 We can easily retrieve this TM/chunk to port default mapping with the following commands (the command must be executed for all the NPUs of the considered line card): 
 
+<div class="highlighter-rouge">
+<pre class="highlight">
+<code>
 RP/0/RSP0/CPU0:BNG#show qoshal ep np 0 location 0/0/CPU0 
 Sun Jun 30 10:21:40.830 CEST
 TY Options argc:6 
@@ -54,20 +57,23 @@ Done
  show qoshal ep np <np> location <node> front end
  Subslot 0 Ifsubsysnum 0 NP_EP :0 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : Chunk 0, L1 0
+        Egress  : <span style="background-color: #FDD7E4">Chunk 0</span>, L1 0
 
 Subslot 0 Ifsubsysnum 1 NP_EP :1 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : Chunk 1, L1 0
+        Egress  : <span style="background-color: #FDD7E4">Chunk 1</span>, L1 0
 
 Subslot 0 Ifsubsysnum 2 NP_EP :2 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : Chunk 2, L1 0
+        Egress  : <span style="background-color: #FDD7E4">Chunk 2</span>, L1 0
 
 Subslot 0 Ifsubsysnum 3 NP_EP :3 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : Chunk 3, L1 0
+        Egress  : <span style="background-color: #FDD7E4">Chunk 3</span>, L1 0
 
+</code>
+</pre>
+</div>
 
 
 
