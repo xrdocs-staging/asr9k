@@ -6,7 +6,7 @@ tags:
   - ASR 9000
   - BNG
   - QoS
-position: hidden
+position: top
 excerpt: This article covers ASR 9000 best practices to maximize BNG scale
 author: Cisco Design Team
 ---
