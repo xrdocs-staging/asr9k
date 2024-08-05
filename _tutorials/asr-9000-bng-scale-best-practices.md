@@ -54,7 +54,7 @@ TY Options argc:6
 nphal_show_chk -p 33312 ep -n 0x0 
 Done
 
- show qoshal ep np <np> location <node> front end
+ show qoshal ep np np location node front end
  Subslot 0 Ifsubsysnum 0 NP_EP :0 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
         Egress  : <span style="background-color: #ff0000">Chunk 0</span>, L1 0
@@ -71,9 +71,83 @@ Subslot 0 Ifsubsysnum 3 NP_EP :3 State :1 Ifsub Type :0x10030 Num Ports: 1 Port 
 Port: 0
         Egress  : <span style="background-color: #660066">Chunk 3</span>, L1 0
 
+
+RP/0/RSP0/CPU0:BNG#show qoshal ep np 1 location 0/0/CPU0 
+Sun Jun 30 23:21:44.871 CEST
+TY Options argc:6 
+nphal_show_chk -p 33312 ep -n 0x1 
+Done
+
+ show qoshal ep np np location node front end
+ Subslot 0 Ifsubsysnum 4 NP_EP :0 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
+Port: 0
+        Egress  : <span style="background-color: #ff0000">Chunk 0</span>, L1 0
+
+Subslot 0 Ifsubsysnum 5 NP_EP :1 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
+Port: 0
+        Egress  : <span style="background-color: #006600">Chunk 1</span>, L1 0
+
+Subslot 0 Ifsubsysnum 6 NP_EP :2 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
+Port: 0
+        Egress  : <span style="background-color: #003399">Chunk 2</span>, L1 0
+
+Subslot 0 Ifsubsysnum 7 NP_EP :3 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
+Port: 0
+        Egress  : <span style="background-color: #660066">Chunk 3</span>, L1 0
 </code>
 </pre>
 </div>
 
+Now that we can identify the chunk to port default mapping, it is important to understand that every subscriber using QoS queuing consumes one QoS hardware entity that is called L3(8Q) or L3(16Q) depending on the generation.  
 
+A quick word about QoS entities: the ASR 9000 scheduler is implemented through several entity levels depending on how the QoS queuing is configured; port level, sub-interface level, parent/child policy-map etc.  
+
+Each line card generation has its own specification regarding the number of L3 entities available per chunk:
+- 3rd generation / Tomahawk: 8000 L3 entities
+- 5th generation / LightSpeed+: 1500 L3 entities
+
+Let’s take a practical example and consider that we use 4 access-interfaces to serve our subscribers with QoS queuing, all the 4 access-interfaces are sub-interfaces (S-VLAN) belonging to one Bundle-Ether interface of one port, port Hu0/x/0/5 in our example.  
+
+Access sub-interfaces configuration is straightforward:
+
+<div class="highlighter-rouge">
+<pre class="highlight">
+<code>
+interface Bundle-Ether1.10
+ ipv4 point-to-point
+ ipv6 enable
+ service-policy type control subscriber BNG_PMAP
+ pppoe enable bba-group BBAGROUP
+ load-interval 30
+ encapsulation dot1q 10
+!
+interface Bundle-Ether1.20
+ ipv4 point-to-point
+ ipv6 enable
+ service-policy type control subscriber BNG_PMAP
+ pppoe enable bba-group BBAGROUP
+ load-interval 30
+ encapsulation dot1q 20
+!
+interface Bundle-Ether1.30
+ ipv4 point-to-point
+ ipv6 enable
+ service-policy type control subscriber BNG_PMAP
+ pppoe enable bba-group BBAGROUP
+ load-interval 30
+ encapsulation dot1q 30
+!
+interface Bundle-Ether1.40
+ ipv4 point-to-point
+ ipv6 enable
+ service-policy type control subscriber BNG_PMAP
+ pppoe enable bba-group BBAGROUP
+ load-interval 30
+ encapsulation dot1q 40
+!
+</code>
+</pre>
+</div>
+
+QoS queuing subscribers that are established on the 4 sub-interfaces will only use chunk1 of NPU1 because of the default chunk to port mapping:
 
