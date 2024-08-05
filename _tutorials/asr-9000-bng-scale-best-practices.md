@@ -61,7 +61,7 @@ Port: 0
 
 Subslot 0 Ifsubsysnum 1 NP_EP :1 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : <span style="background-color: #006600">Chunk 1</span>, L1 0
+        Egress  : <span style="background-color: #66ff99">Chunk 1</span>, L1 0
 
 Subslot 0 Ifsubsysnum 2 NP_EP :2 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
@@ -85,7 +85,7 @@ Port: 0
 
 Subslot 0 Ifsubsysnum 5 NP_EP :1 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : <span style="background-color: #006600">Chunk 1</span>, L1 0
+        Egress  : <span style="background-color: #66ff99">Chunk 1</span>, L1 0
 
 Subslot 0 Ifsubsysnum 6 NP_EP :2 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
