@@ -190,3 +190,67 @@ CLIENT : QoS-EA
 
 As the above example shows, the default TM chunk to port mapping will limit the number of subscribers to the capacity of one TM chunk for a BNG usage of one port. The other NPU QoS queue resources available are wasted.
 
+# Leveraging available free QoS queuing resources
+
+Supported on IOS-XR 64-bit, the feature Subscriber Port Density (SPD) allows to allocate a specific TM chunk to an access sub-interface that has an S-VLAN configured; hence unlocking all QoS queuing resources to reach the potential NPU full scale.  
+
+To achieve SPD, you first need to configure a “dummy” QoS policy-map that shapes the class-default to the port rate (100G in our case). To pursue our example here’s the “dummy” shaper configuration:
+
+<div class="highlighter-rouge">
+<pre class="highlight">
+<code>
+policy-map dummyshaper
+ class class-default
+  shape average 100 gbps 
+ ! 
+ end-policy-map
+!
+</code>
+</pre>
+</div>
+
+Now the idea is to apply this policy-map to every BNG access sub-interface and bind a distinct TM chunk to each access sub-interface thanks to the keyword “subscriber-parent resource-id”. Here it is:
+
+<div class="highlighter-rouge">
+<pre class="highlight">
+<code>
+interface Bundle-Ether1.10
+ ipv4 point-to-point
+ ipv6 enable
+ service-policy output dummyshaper subscriber-parent <span style="background-color: #ff0000">resource-id 0</span>
+ service-policy type control subscriber BNG_PMAP
+ pppoe enable bba-group BBAGROUP
+ load-interval 30
+ encapsulation dot1q 10
+!
+interface Bundle-Ether1.20
+ ipv4 point-to-point
+ ipv6 enable
+ service-policy output dummyshaper subscriber-parent <span style="background-color: #66ff99">resource-id 1</span>
+ service-policy type control subscriber BNG_PMAP
+ pppoe enable bba-group BBAGROUP
+ load-interval 30
+ encapsulation dot1q 20
+!
+interface Bundle-Ether1.30
+ ipv4 point-to-point
+ ipv6 enable
+ service-policy output dummyshaper subscriber-parent <span style="background-color: #003399">resource-id 2</span>
+ service-policy type control subscriber BNG_PMAP
+ pppoe enable bba-group BBAGROUP
+ load-interval 30
+ encapsulation dot1q 30
+!
+interface Bundle-Ether1.40
+ ipv4 point-to-point
+ ipv6 enable
+ service-policy output dummyshaper subscriber-parent <span style="background-color: #ff33ff">resource-id 3</span>
+ service-policy type control subscriber BNG_PMAP
+ pppoe enable bba-group BBAGROUP
+ load-interval 30
+ encapsulation dot1q 40
+!
+</code>
+</pre>
+</div>
+
