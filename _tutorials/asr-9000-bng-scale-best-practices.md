@@ -28,7 +28,7 @@ We will present internal hardware design and how it is used when it comes to BNG
 	- The article mostly considers egress subscriber QoS as it is not a best practice to use ingress subscriber QoS queuing.
 	- The article will mostly use Bundle-Ether interface type as examples, but the reasoning is the same for Pseudowire Headend (PW-HE) interface type.
     
-# BNG QoS queuing resources default allocation
+# BNG QoS Queuing Resources Default Allocation
 
 Once established, a subscriber is managed during its lifespan by a virtual interface that is dynamically created on top of the access interface you have configured. This virtual interface gathers the subscriber’s parameters: IP addressing, forwarding VRF, MTU… and QoS.  
 As a reminder, you can apply QoS to subscribers using several techniques: through RADIUS (dynamic-template included), Parameterized QoS or QoS shaper parameterization.  
@@ -190,7 +190,7 @@ CLIENT : QoS-EA
 
 As the above example shows, the default TM chunk to port mapping will limit the number of subscribers to the capacity of one TM chunk for a BNG usage of one port. The other NPU QoS queue resources available are wasted.
 
-# Leveraging available free QoS queuing resources
+# Leveraging Available Free QoS Queuing Resources
 
 Supported on IOS-XR 64-bit, the feature Subscriber Port Density (SPD) allows to allocate a specific TM chunk to an access sub-interface that has an S-VLAN configured; hence unlocking all QoS queuing resources to reach the potential NPU full scale.  
 
@@ -306,4 +306,31 @@ When it comes to defining which chunk to allocate to which S-VLAN, several strat
 A thought to keep in mind when allocating TM chunk to BNG access sub-interfaces: the queuing resources that you bind to BNG needs will be shared with other non-BNG queuing needs; if you have another used interface within the same NPU as the BNG port, it will use its default TM chunk to port mapping for queuing.  
 
 SPD is only applicable to BNG access sub-interfaces: the BNG main interface subscribers will still use the default chunk to port mapping.
+
+# Design Considerations
+
+Thanks to the SPD feature, we can achieve higher scale on the platform and maximize the QoS queuing resources per NPU. It comes with the need to deliver subscriber traffic to the ASR9000 BNG node with distinct dot1q VLANs in order to populate subscribers across multiple access sub-interfaces.  
+
+Depending on your access/aggregation network, the following solutions could suit the need to deliver subscriber traffic with multiple VLANs to the ASR 9000 BNG node:
+
+- if BNG nodes are decentralized in your aggregation network, you can work on the neighbor switch or OLT to manipulate VLAN tagging (add/remove/translate).
+- if BNG nodes are rather centralized and use L2VPN technologies to deliver subscriber traffic, you can either work on the neighbor L2VPN PEs to manipulate VLAN tagging or reflect on a local solution based on a loopback cable and a bridge-domain structure than allows local VLAN manipulations.
+- BNG Pseudowire Headend can also be a solution to explore as any PW-Ether sub-interfaces can be attached to any TM chunk: subscriber traffic using same S-VLAN coming from several L2VPN PW neighbors can be bound to distinct TM chunks.
+
+# Subscriber QoS evolution
+
+The discussed topic implies the usage of QoS queuing to manage subscriber traffic. Nowadays, considering the progress of high-speed plans offered to Service Provider’s customers, the need of complex QoS using queuing can be re-considered: queuing being not as much mandatory as previously when it comes to QoE. Even with a precisely defined QoS queuing solution, voice traffic congestion management for instance is not necessarily giving great QoE results; and that, without considering Forward Error Correction techniques that now allow to partly loose packets without much of a QoE degradation.  
+
+In this context, you can think about transitioning some QoS offers to policing solutions. Here are two examples of QoS policy-map conversions from shaper to policer: 
+
+![asr9k-qos-config-evolution.png]({{site.baseurl}}/images/asr9k-qos-config-evolution.png)
+
+**Note:** the QoS policer solution with child-aware feature for BNG subscribers is available on 5th generation line card introduced with IOS-XR 7.11 release.
+{: .notice--info}
+
+As a policer is a less system costly technique compared to queuing, the ASR 9000 platform provides significantly more policing capabilities than queuing ones. Also, policing is simply implemented on the NPU of each line card without the need to allocate them if you want to scale more.
+
+# Conclusion
+
+We have explored the options that can lead to a more defined and more scalable BNG solution within your network. Since the BNG engineering is often dependent on how the aggregation network is built, you have all the tools to find the best fit to your network and leverage the full ASR 9000 BNG capabilities.
 
