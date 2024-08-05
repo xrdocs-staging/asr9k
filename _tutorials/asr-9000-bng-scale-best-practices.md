@@ -169,7 +169,7 @@ BE1.20                  	    BNG_PMAP 	   Y     300       300           0
 BE1.30                  	    BNG_PMAP 	   Y     400       400           0
 BE1.40                  	    BNG_PMAP 	   Y     600       600           0
                                              ----------------------------------
-TOTAL                                           4    1500      1500           0
+<mark>TOTAL                                           4    1500      1500           0</mark>
 
 RP/0/RSP0/CPU0:BNG# show qoshal resource summary np 1 location 0/0/CPU0 | begin "CLIENT : QoS-EA"
 Mon Jul  1 00:19:54.131 CEST
@@ -177,9 +177,9 @@ CLIENT : QoS-EA
    Policy Instances: Ingress 0 Egress 1500  Total: 1500
     TM 0 
     Entities: (L4 level: Queues)
-     Level   Chunk 0           Chunk 1           Chunk 2           Chunk 3          
+     Level   <span style="background-color: #ff0000">Chunk 0</span>           <span style="background-color: #66ff99">Chunk 1</span>           <span style="background-color: #003399">Chunk 2</span>           <span style="background-color: #ff33ff">Chunk 3</span>          
      L4         0(    0/    0)10280(10280/10280)    0(    0/    0)    0(    0/    0)
-     L3(8Q)     0(    0/    0) 1500( 1500/ 1500)    0(    0/    0)    0(    0/    0)
+     <mark>L3(8Q)</mark>     0(    0/    0) <mark>1500( 1500/ 1500)</mark>    0(    0/    0)    0(    0/    0)
      L3(16Q)    0(    0/    0)    0(    0/    0)    0(    0/    0)    0(    0/    0)
      L2         0(    0/    0)    0(    0/    0)    0(    0/    0)    0(    0/    0)
      L1         0(    0/    0)    0(    0/    0)    0(    0/    0)    0(    0/    0)
@@ -187,4 +187,6 @@ CLIENT : QoS-EA
 </code>
 </pre>
 </div>
+
+As the above example shows, the default TM chunk to port mapping will limit the number of subscribers to the capacity of one TM chunk for a BNG usage of one port. The other NPU QoS queue resources available are wasted.
 
