@@ -254,3 +254,56 @@ interface Bundle-Ether1.40
 </pre>
 </div>
 
+Now, let’s see how the QoS queuing resources are distributed. We re-establish the same number of subscribers as before (1500), on the access sub-interfaces:
+
+<div class="highlighter-rouge">
+<pre class="highlight">
+<code>
+RP/0/RSP0/CPU0:BNG#show pppoe summary per-access-interface 
+Sun Jun 30 11:12:01.212 CEST
+
+0/RSP0/CPU0
+-----------
+    COMPLETE: Complete PPPoE Sessions
+    INCOMPLETE: PPPoE sessions being brought up or torn down
+
+Interface                        BBA-Group  READY   TOTAL  COMPLETE  INCOMPLETE
+-------------------------------------------------------------------------------
+BE1.10                  	    BNG_PMAP 	   Y     200       200           0
+BE1.20                  	    BNG_PMAP 	   Y     300       300           0
+BE1.30                  	    BNG_PMAP 	   Y     400       400           0
+BE1.40                  	    BNG_PMAP 	   Y     600       600           0
+                                             ----------------------------------
+TOTAL                                           4    1500      1500           0
+
+RP/0/RSP0/CPU0:BNG# show qoshal resource summary np 1 location 0/0/CPU0 | begin "CLIENT : QoS-EA"
+Mon Jul  1 00:19:54.131 CEST
+CLIENT : QoS-EA 
+   Policy Instances: Ingress 0 Egress 1504  Total: 1504
+    TM 0 
+    Entities: (L4 level: Queues)
+     Level   Chunk 0           Chunk 1           Chunk 2           Chunk 3          
+     L4      1551( 1551/ 1551) 2312( 2312/ 2312) 3407( 3407/ 3407) 3014( 3014/ 3014)
+     <mark>L3(8Q)   201(  201/  201)  301(  301/  301)  401(  401/  401)  601(  601/  601)</mark>
+     L3(16Q)    0(    0/    0)    0(    0/    0)    0(    0/    0)    0(    0/    0)
+     L2         1(    1/    1)    1(    1/    1)    1(    1/    1)    1(    1/    1)
+     L1         0(    0/    0)    0(    0/    0)    0(    0/    0)    0(    0/    0)
+   Policers : 3072(3072)
+</code>
+</pre>
+</div>
+
+**Note:** when activating SPD on a sub-interface, it is expected to consume one L2, one L3 and one L4 QoS entities of the related chunk.
+{: .notice--info}
+
+The 1500 subscribers are now distributed across the 4 TM chunks according to the configured binding. Each of the chunk can be used to its scale limit: hence it is possible to reach 4 times the scale of the default chunk to port mapping with SPD and finally reach 4 times the subscriber limit.
+
+When it comes to defining which chunk to allocate to which S-VLAN, several strategies can be used:
+- round-robin allocation
+- if you have a subscriber forecast per S-VLAN, you can distribute the TM chunks to access sub-interfaces accordingly
+- monitor the TM chunks usage and modify the bindings
+
+A thought to keep in mind when allocating TM chunk to BNG access sub-interfaces: the queuing resources that you bind to BNG needs will be shared with other non-BNG queuing needs; if you have another used interface within the same NPU as the BNG port, it will use its default TM chunk to port mapping for queuing.  
+
+SPD is only applicable to BNG access sub-interfaces: the BNG main interface subscribers will still use the default chunk to port mapping.
+
