@@ -69,7 +69,7 @@ Port: 0
 
 Subslot 0 Ifsubsysnum 3 NP_EP :3 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : <span style="background-color: #660066">Chunk 3</span>, L1 0
+        Egress  : <span style="background-color: #ff33ff">Chunk 3</span>, L1 0
 
 
 RP/0/RSP0/CPU0:BNG#show qoshal ep np 1 location 0/0/CPU0 
@@ -93,7 +93,7 @@ Port: 0
 
 Subslot 0 Ifsubsysnum 7 NP_EP :3 State :1 Ifsub Type :0x10030 Num Ports: 1 Port Type : 100G
 Port: 0
-        Egress  : <span style="background-color: #660066">Chunk 3</span>, L1 0
+        Egress  : <span style="background-color: #ff33ff">Chunk 3</span>, L1 0
 </code>
 </pre>
 </div>
@@ -150,4 +150,41 @@ interface Bundle-Ether1.40
 </div>
 
 QoS queuing subscribers that are established on the 4 sub-interfaces will only use chunk1 of NPU1 because of the default chunk to port mapping:
+
+<div class="highlighter-rouge">
+<pre class="highlight">
+<code>
+RP/0/RSP0/CPU0:BNG#show pppoe summary per-access-interface 
+Sun Jun 30 10:40:45.830 CEST
+
+0/RSP0/CPU0
+-----------
+    COMPLETE: Complete PPPoE Sessions
+    INCOMPLETE: PPPoE sessions being brought up or torn down
+
+Interface                        BBA-Group  READY   TOTAL  COMPLETE  INCOMPLETE
+-------------------------------------------------------------------------------
+BE1.10                  	    BNG_PMAP 	   Y     200       200           0
+BE1.20                  	    BNG_PMAP 	   Y     300       300           0
+BE1.30                  	    BNG_PMAP 	   Y     400       400           0
+BE1.40                  	    BNG_PMAP 	   Y     600       600           0
+                                             ----------------------------------
+TOTAL                                           4    1500      1500           0
+
+RP/0/RSP0/CPU0:BNG# show qoshal resource summary np 1 location 0/0/CPU0 | begin "CLIENT : QoS-EA"
+Mon Jul  1 00:19:54.131 CEST
+CLIENT : QoS-EA 
+   Policy Instances: Ingress 0 Egress 1500  Total: 1500
+    TM 0 
+    Entities: (L4 level: Queues)
+     Level   Chunk 0           Chunk 1           Chunk 2           Chunk 3          
+     L4         0(    0/    0)10280(10280/10280)    0(    0/    0)    0(    0/    0)
+     L3(8Q)     0(    0/    0) 1500( 1500/ 1500)    0(    0/    0)    0(    0/    0)
+     L3(16Q)    0(    0/    0)    0(    0/    0)    0(    0/    0)    0(    0/    0)
+     L2         0(    0/    0)    0(    0/    0)    0(    0/    0)    0(    0/    0)
+     L1         0(    0/    0)    0(    0/    0)    0(    0/    0)    0(    0/    0)
+   Policers : 3072(3072)
+</code>
+</pre>
+</div>
 
