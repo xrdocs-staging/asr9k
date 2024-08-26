@@ -8,7 +8,7 @@ tags:
   - QoS
 position: top
 excerpt: This article covers ASR 9000 best practices to maximize BNG scale
-author: Cisco Design Team
+author: Paul Blaszkiewicz
 ---
 # Introduction
 
@@ -333,4 +333,3 @@ As a policer is a less system costly technique compared to queuing, the ASR 9000
 # Conclusion
 
 We have explored the options that can lead to a more defined and more scalable BNG solution within your network. Since the BNG engineering is often dependent on how the aggregation network is built, you have all the tools to find the best fit to your network and leverage the full ASR 9000 BNG capabilities.
-
