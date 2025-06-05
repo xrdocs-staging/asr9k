@@ -620,8 +620,8 @@ Packet tracing on punt path is supported since XR release 7.5.2. You can trace p
 
 Below example shows the packet-trace counters incremented during a telnet session into the router.
 
-<div>
-<pre>
+<div class="highlighter-rouge">
+<pre class="highlight">
 <code>
 RP/0/RSP0/CPU0:ASR9910-1-xrg-403#sh packet-trace status
 Thu Jun  5 09:36:07.592 UTC
