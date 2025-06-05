@@ -614,6 +614,86 @@ From this result the packet flow of ICMP echo processing inside ASR9k:
 
 You can also observe that NetIO on IOS XR routers reuses the buffer carrying the ICMP echo request packet when it generates the echo reply, thus preserving the packet tracer flag in the internal packet header. 
 
+## Use Case 5: Trace Packets On Punt Path
+
+Packet tracing on punt path is supported since XR release 7.5.2. You can trace packets in SPP, NetIO, UDP and TCP. SPP and NetIO have a collection of libraries that are dynamically linked. As only processes can register counters with the packet trace framework, in all SPP and NetIO library functions use three generic counters: ENTRY_COUNT, EXIT_COUNT, DROP_COUNT. During each counter increment, a detailed description of the action is passed on to the packet trace framework as an attribute in the counter update API. You can use the "show packet-trace result counter \<name\>" to see the details.
+
+Below example shows the packet-trace counters incremented during a telnet session into the router.
+
+<div>
+<pre>
+<code>
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#sh packet-trace status
+Thu Jun  5 09:36:07.592 UTC
+------------------------------------------------------------
+
+Packet Trace Master Process:
+
+  Buffered Conditions:
+
+  Status: Inactive
+
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#packet-trace condition interface Bundle-Ether200
+Thu Jun  5 09:36:35.197 UTC
+
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#sh packet-trace status
+Thu Jun  5 09:36:37.976 UTC
+------------------------------------------------------------
+
+Packet Trace Master Process:
+
+  Buffered Conditions:
+    Interface Bundle-Ether200
+      Member HundredGigE0/4/0/3
+
+  Status: Inactive
+
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#packet-trace condition 1 Offset 23 Value 0x06 Mask 0xff
+Thu Jun  5 09:37:34.471 UTC
+
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#packet-trace condition 2 Offset 30 Value 0xac191d65 Mask 0xffffffff
+Thu Jun  5 09:37:45.423 UTC
+
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#sh packet-trace status
+Thu Jun  5 09:37:51.807 UTC
+------------------------------------------------------------
+
+Packet Trace Master Process:
+
+  Buffered Conditions:
+    Interface Bundle-Ether200
+      Member HundredGigE0/4/0/3
+    1 offset 23 value 0x6 mask 0xff
+    2 offset 30 value 0xac191d65 mask 0xffffffff
+
+  Status: Inactive
+
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#packet-trace start
+Thu Jun  5 09:37:57.795 UTC
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#show packet-trace results
+Thu Jun  5 09:38:12.535 UTC
+T: D - Drop counter; P - Pass counter
+Location     | Source       | Counter                   | T | Last-Attribute                           | Count
+------------   ------------   -------------------------   -   ----------------------------------------   ---------------
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#show packet-trace results
+Thu Jun  5 09:38:23.307 UTC
+T: D - Drop counter; P - Pass counter
+Location     | Source       | Counter                   | T | Last-Attribute                           | Count
+------------   ------------   -------------------------   -   ----------------------------------------   ---------------
+0/RSP0/CPU0    SPP-PI         CLIENT_PUNT_SUCCESS         P   stage1                                     24
+0/RSP0/CPU0    NETIO-PI       BYPASS_MUT_QFULL_DROP       D   packet_input_bypass                        24
+0/RSP0/CPU0    NETIO-PI       IP_COUNT                    P   netio_send_pulse_input                     24
+0/RSP0/CPU0    spp-LIB        ENTRY_COUNT                 P   SPP PD Punt: stage1                        24
+0/RSP0/CPU0    netio-LIB      ENTRY_COUNT                 P   lpts_npmb_ipv4_delivers                    72
+0/RSP0/CPU0    tcp-LIB        ENTRY_COUNT                 P   ip lib - input from netio                  48
+0/RSP0/CPU0    TCP            RECV_PCB_RQ                 P   TCP pkt processing done                    17
+0/4/CPU0       NP1            PACKET_MARKED               P   HundredGigE0_4_0_3                         22
+0/4/CPU0       NP1            PACKET_TO_FABRIC            P                                              22
+RP/0/RSP0/CPU0:ASR9910-1-xrg-403#
+</code>
+</pre>
+</div>
+
 # XR Embedded Packet Tracer Restrictions And Limitations
 
 ## XR release 7.1.2:
@@ -623,6 +703,11 @@ You can also observe that NetIO on IOS XR routers reuses the buffer carrying the
 - You can specify a maximum of three 4-octet Offset/Value/Mask sets.
 - Embedded Packet Tracer is not HA (high availability) aware. Specified packet tracer conditions are not synchronised with the standby RP.
 - By design, packet tracer conditions cannot be updated while packet tracing is active.
+
+## XR release 7.5.2:
+
+- packet tracer automatically resolves bundle members at the time when the condition is set
+- you can now trace packets on the punt path in SPP, NetIO, UDP, TCP
 
 
 # Appendix 1: XR Embedded Packet Tracer Framework Architecture Details
