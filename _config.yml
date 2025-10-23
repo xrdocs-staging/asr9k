@@ -299,8 +299,8 @@ tags:
 
 
 prose:
-  siteurl: 'https://xrdocs.github.io/cloud-scale-networking/'
-  relativeLinks: 'https://xrdocs.github.io/cloud-scale-networking/links.jsonp'
+  siteurl: 'https://d101lr0mb7xh5s.cloudfront.net/asr9k/'
+  relativeLinks: 'https://d101lr0mb7xh5s.cloudfront.net/asr9k//links.jsonp'
   media: 'images'
   ignore:
     - index.md
